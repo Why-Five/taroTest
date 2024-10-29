@@ -39,6 +39,7 @@
   "author": "",
   "dependencies": {
     "@babel/runtime": "^7.21.5",
+    "@reduxjs/toolkit": "^2.3.0",
     "@tarojs/components": "4.0.5",
     "@tarojs/helper": "4.0.5",
     "@tarojs/plugin-framework-react": "4.0.5",
@@ -53,8 +54,11 @@
     "@tarojs/runtime": "4.0.5",
     "@tarojs/shared": "4.0.5",
     "@tarojs/taro": "4.0.5",
+    "@types/react-redux": "^7.1.34",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1",
     "taro-ui": "^3.2.1"
   },
   "devDependencies": {
