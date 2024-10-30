@@ -2,16 +2,31 @@ import { View , Input , Text ,Button} from "@tarojs/components"
 import { useEffect, useState } from "react"
 import './login.scss'
 import Taro from '@tarojs/taro'
-import { myWxLogin } from '@/service/user'
+import { phoneLogin, sendCode, myWxLogin } from '@/service/user'
+import { isCodeAvailable, isPhoneAvailable } from "@/utils/validate"
+import { getUserInfo } from '@/service/user'
+import { useAppDispatch } from "@/store"
+import { setUserInfo } from "@/store/modules/user"
 
 const login = () => {
+  const dispatch = useAppDispatch();
   const [count, setCount] = useState(60);
   const [timer, setTimer] = useState(false);
-
   const [form, setForm] = useState({
     phone: '',
     code: ''
   });
+  const getLoginUserInfo = async () => {
+    const res = await getUserInfo();
+    if (res.code === 0) {
+      dispatch(setUserInfo(res.data));
+    } else {
+      Taro.showToast({
+        title: res.msg,
+        icon: 'none',
+      });
+    }
+  }
   useEffect(() => {
     let interval;
     if (timer) {
@@ -30,12 +45,66 @@ const login = () => {
   }, [timer]);
 
   const sendPhoneCode = async () => {
-    setTimer(true);
+    if (form.phone && isPhoneAvailable(form.phone)) {
+      setTimer(true);
+      const res = await sendCode(form.phone);
+      if (res.code === 0) {
+        Taro.showToast({
+          title: '验证码发送成功',
+          icon: 'none',
+        });
+      } else {
+        Taro.showToast({
+          title: '验证码发送失败',
+          icon: 'none',
+        });
+      }
+    }else {
+      Taro.showToast({
+        title: '请输入正确的手机号',
+        icon: 'none',
+      });
+    }
   };
 
   const handleLoginClick = async () => {
-    console.log(form);
+    if (!form.phone || !isPhoneAvailable(form.phone)){
+      Taro.showToast({
+        title: '请输入正确的手机号',
+        icon: 'none',
+      });
+      return;
+    }
+
+    if (!form.code || !isCodeAvailable(form.code)) {
+      Taro.showToast({
+        title: '请输入正确的验证码',
+        icon: 'none',
+      });
+      return;
+    }
+
+    const res = await phoneLogin(form.phone, form.code);
+    if (res.code === 0) {
+      Taro.setStorageSync('token', res.data.accessToken);
+      getLoginUserInfo();
+      Taro.showToast({
+        title: '登录成功',
+        icon: 'success',
+      });
+
+      Taro.switchTab({
+        url: '/pages/index/index',
+      });
+    } else {
+      Taro.showToast({
+        title: res.msg,
+        icon: 'none',
+      });
+      return;
+    }
   };
+
 
   // const wxLogin = () => {
   // };
@@ -62,6 +131,7 @@ const login = () => {
           });
 
           Taro.setStorageSync('token', wxLoginRes.data.accessToken);
+          getLoginUserInfo();
           Taro.switchTab({
             url: '/pages/index/index',
           });
@@ -78,6 +148,7 @@ const login = () => {
         icon: 'none',
       });
     }
+
   };
 
   const handleInputCode = (e) => {

@@ -49,7 +49,7 @@ export const http = <T>(options: {
 const httpInterceptor = function (chain) {
   const requestParams = chain.requestParams
   const { url } = requestParams
-  if (!url.startswith('http')) {
+  if (!url.startsWith('http')) {
     requestParams.url = baseURL + url
   }
   requestParams.header = {
