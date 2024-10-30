@@ -1,6 +1,8 @@
-import { View , Input , Text ,Button} from "@tarojs/components";
-import { useEffect, useState } from "react";
-import './login.scss';
+import { View , Input , Text ,Button} from "@tarojs/components"
+import { useEffect, useState } from "react"
+import './login.scss'
+import Taro from '@tarojs/taro'
+import { myWxLogin } from '@/service/user'
 
 const login = () => {
   const [count, setCount] = useState(60);
@@ -35,7 +37,47 @@ const login = () => {
     console.log(form);
   };
 
-  const wxLogin = () => {
+  // const wxLogin = () => {
+  // };
+
+  const wxLogin = async () => {
+    try {
+      const res = await Taro.getUserProfile(
+        {
+          desc: '获取你的昵称、头像、地区及性别',
+        }
+      );
+
+      const loginRes = await Taro.login();
+
+      console.log(loginRes);
+
+      if (loginRes.code) {
+        const wxLoginRes = await myWxLogin(loginRes.code, res.encryptedData, res.iv);
+
+        if (wxLoginRes.code === 0) {
+          Taro.showToast({
+            title: '登录成功',
+            icon: 'success',
+          });
+
+          Taro.setStorageSync('token', wxLoginRes.data.accessToken);
+          Taro.switchTab({
+            url: '/pages/index/index',
+          });
+        } else {
+          Taro.showToast({
+            title: wxLoginRes.msg,
+            icon: 'none',
+          });
+        }
+      }
+    }catch (err) {
+      Taro.showToast({
+        title: '获取用户信息失败',
+        icon: 'none',
+      });
+    }
   };
 
   const handleInputCode = (e) => {
@@ -96,3 +138,7 @@ const login = () => {
 };
 
 export default login;
+
+
+
+
