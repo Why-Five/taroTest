@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react';
 import { useLaunch } from '@tarojs/taro';
-// import { Provider } from 'react-redux';
 import { Provider } from 'react-redux';
 import 'taro-ui/dist/style/index.scss';
 import store from './store';

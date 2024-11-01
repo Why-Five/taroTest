@@ -1,14 +1,14 @@
-import { View , Input , Text ,Button} from "@tarojs/components"
-import { useEffect, useState } from "react"
-import './login.scss'
 import Taro from '@tarojs/taro'
-import { phoneLogin, sendCode, myWxLogin } from '@/service/user'
+import { phoneLogin, sendCode, myWxLogin, getUserInfo } from '@/service/user'
 import { isCodeAvailable, isPhoneAvailable } from "@/utils/validate"
-import { getUserInfo } from '@/service/user'
-import { useAppDispatch } from "@/store"
+// import { useAppDispatch } from "@/store"
 import { setUserInfo } from "@/store/modules/user"
+import { View, Input, Text, Button } from "@tarojs/components"
+import { useEffect, useState } from "react"
+import { useAppDispatch } from '@/store'
+import './login.scss'
 
-const login = () => {
+const Login = () => {
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(60);
   const [timer, setTimer] = useState(false);
@@ -59,7 +59,7 @@ const login = () => {
           icon: 'none',
         });
       }
-    }else {
+    } else {
       Taro.showToast({
         title: '请输入正确的手机号',
         icon: 'none',
@@ -68,7 +68,7 @@ const login = () => {
   };
 
   const handleLoginClick = async () => {
-    if (!form.phone || !isPhoneAvailable(form.phone)){
+    if (!form.phone || !isPhoneAvailable(form.phone)) {
       Taro.showToast({
         title: '请输入正确的手机号',
         icon: 'none',
@@ -142,7 +142,7 @@ const login = () => {
           });
         }
       }
-    }catch (err) {
+    } catch (err) {
       Taro.showToast({
         title: '获取用户信息失败',
         icon: 'none',
@@ -159,48 +159,48 @@ const login = () => {
   };
 
   return (
-    <View className="loginPage">
-      <View className="top">
-        <View className="title">验证码登录</View>
-        <View className="sinfo">未注册的手机号验证后自动完成注册</View>
+    <View className='loginPage'>
+      <View className='top'>
+        <View className='title'>验证码登录</View>
+        <View className='sinfo'>未注册的手机号验证后自动完成注册</View>
       </View>
-      <View className="form">
+      <View className='form'>
         <Input
-          className="input"
-          type="text"
-          placeholder="请输入手机号码"
+          className='input'
+          type='text'
+          placeholder='请输入手机号码'
           value={form.phone}
           onInput={(e) => handleInputPhone(e)}
         />
-        <View className="code">
+        <View className='code'>
           <Input
-            className="password"
-            type="text"
+            className='password'
+            type='text'
             password
-            placeholder="请输入验证码"
+            placeholder='请输入验证码'
             value={form.code}
             onInput={(e) => handleInputCode(e)}
           />
           {
             !timer ? (
-              <Text className="btn" onClick={sendPhoneCode} hidden={timer}>发送验证码</Text>
+              <Text className='btn' onClick={sendPhoneCode} hidden={timer}>发送验证码</Text>
             ) : (
-              <Text className="btn" hidden={!timer}>
+              <Text className='btn' hidden={!timer}>
                 {count}秒后重新获取</Text>
             )
 
           }
         </View>
-        <Button className="button" onClick={handleLoginClick}>登录</Button>
-        <View className="extra">
-          <View className="caption">
+        <Button className='button' onClick={handleLoginClick}>登录</Button>
+        <View className='extra'>
+          <View className='caption'>
             <Text>其他方式登录</Text>
           </View>
-          <View className="options">
-            <Text className="icon icon-weixin" onClick={wxLogin}>微信一键登录</Text>
+          <View className='options'>
+            <Text className='icon icon-weixin' onClick={wxLogin}>微信一键登录</Text>
           </View>
         </View>
-        <View className="tips">
+        <View className='tips'>
           登录/注册既视为你同意《服务条款》和《隐私政策》
         </View>
       </View>
@@ -208,7 +208,7 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;
 
 
 

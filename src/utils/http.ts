@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 
+const baseURL = process.env.TARO_APP_API_BASE_URL
 type Data<T> = {
   code: number
   msg: string
