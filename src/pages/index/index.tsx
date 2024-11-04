@@ -1,11 +1,12 @@
-import { View, Text, SwiperItem } from '@tarojs/components';
+import { View, Text, SwiperItem} from '@tarojs/components';
 import { useEffect, useState } from 'react';
-import { getIndexNotice } from '@/service/notice';
+import { getIndexNotice, getNoticeSwiper } from '@/service/notice';
 import 'taro-ui/dist/style/index.scss';
 import 'taro-ui/dist/style/components/button.scss'; // 按需引入
 import './index.scss';
 import Navbar from './components/CustomNavbar';
 import Notice from './components/Notice';
+import Swiper from './components/Swiper';
 
 
 export default function Index() {
@@ -19,13 +20,22 @@ export default function Index() {
     }
   };
 
+  const getSwiperFunction = async () => {
+    const res = await getNoticeSwiper();
+    if (res.code === 0) {
+      setSwiper(res.data);
+    }
+  };
+
   useEffect(() => {
-    getIndexNoticeFunction();
+    getIndexNoticeFunction()
+    getSwiperFunction()
   },[])
   return (
     <View className='index'>
       <Navbar />
       <Notice noticeList={noticeList} />
+      <Swiper swiperList={swiper} />
     </View>
   );
 }
