@@ -3,13 +3,14 @@ export default defineAppConfig({
     'pages/index/index',
     'pages/contribute/contribute',
     'pages/login/login',
-    'pages/my/my'
+    'pages/my/my',
+    'pages/notice/notice',
   ],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
     navigationBarTitleText: 'WeChat',
-    navigationBarTextStyle: 'black'
+    navigationBarTextStyle: 'black',
   },
   tabBar: {
     color: '#333',
@@ -35,6 +36,6 @@ export default defineAppConfig({
         iconPath: 'static/tabs/my_default.png',
         selectedIconPath: 'static/tabs/my_selected.png',
       },
-    ]
-  }
+    ],
+  },
 })
