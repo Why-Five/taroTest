@@ -21,3 +21,10 @@ export const getNoticePage = (data: PageParams) => {
     data,
   })
 }
+
+export const getNoticeById = (id: number) => {
+  return http<NoticeItem>({
+    method: 'GET',
+    url: '/notice/detail/' + id,
+  })
+}
