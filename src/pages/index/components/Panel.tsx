@@ -1,5 +1,7 @@
-import { View , Navigator , Image ,Text} from "@tarojs/components";
+import { View, Navigator, Image, Text } from "@tarojs/components";
 import { useState } from "react";
+import './panel.scss';
+
 
 const Panel = () => {
   const [panType] = useState([
