@@ -5,6 +5,7 @@ export default defineAppConfig({
     'pages/login/login',
     'pages/my/my',
     'pages/notice/notice',
+    'pages/noticeDetail/noticeDetail',
   ],
   window: {
     backgroundTextStyle: 'light',

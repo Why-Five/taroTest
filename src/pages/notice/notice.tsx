@@ -1,8 +1,9 @@
 import { View, Text, RichText , Navigator, ScrollView } from '@tarojs/components';
 import { useEffect, useState } from 'react';
-import './notice.scss';
+
 import { getNoticePage } from '@/service/notice';
 import Taro from '@tarojs/taro';
+import './notice.scss';
 
 const Notice = () => {
   // const [noticeList, setNoticeList] = useState<IndexNotice>({
