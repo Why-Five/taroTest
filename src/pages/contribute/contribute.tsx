@@ -1,12 +1,24 @@
 import { useAppSelector } from '@/store';
-import { View, Text } from '@tarojs/components';
+import { View } from '@tarojs/components';
 import { useState } from 'react';
+import Taro,{ useLoad } from '@tarojs/taro';
 import { AtAccordion, AtButton, AtForm, AtInput, AtList, AtSwitch, AtTag, AtTextarea } from 'taro-ui';
+import { getTagsList , getCategoryList } from '@/service/contribute';
 import './contribute.scss'
 
+
 const Contribute = () => {
-  type CategoryType = number;  //?????????/
   const nickName = useAppSelector((state) => state.user.userInfo.nickname);
+
+  const [contributeTypeList, setContributeTypeList] = useState<{
+    tagList: CategoryType[]
+    panList: CategoryType[]
+    resourceList: CategoryType[]
+  }>({
+    tagList: [],
+    panList: [],
+    resourceList: [],
+  })
   const [ContributeForm, setContributeForm] = useState<ContributeForm>({
     title: '',
     isTop: 1,
@@ -16,23 +28,56 @@ const Contribute = () => {
     tags: [],
     diskType: null,
     resType: [],
-  });
+  })
+  const [tagOpen, setTagOpen] = useState(false);
+  const [resourceOpen, setResourceOpen] = useState(false);
+  const [panType, setPanType] = useState(null);
+
+  const getTags = async () => {
+    const res = await getTagsList()
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        item.inverted=false
+      })
+
+      setContributeTypeList(prev => ({
+        ...prev,
+        tagList: res.data,
+      }))
+    }
+  }
+
+  const getCategoryListData = async () => {
+    const res = await getCategoryList()
+    if (res.code === 0) {
+      const resourceList = res.data
+        .filter(item => item.type === 1)
+        .map(item => {
+          item.inverted = false
+          return item
+        })
+      setContributeTypeList(prev => ({
+        ...prev,
+        panList: res.data.filter(item => item.type === 0),
+        resourceList: resourceList,
+      }))
+    }
+  }
+  useLoad(() => {
+    Promise.all([getTags(), getCategoryListData()])
+  })
   const handleSubmitClick = () => {
     console.log(ContributeForm);
   };
 
-  const handleUrlChange = (e) => { };
+  const handleUrlChange = e => { };
 
-  const [tagOpen, setTagOpen] = useState(false);
-  const [resourceOpen, setResourceOpen] = useState(false);
-
-  const setResourceInverted = (item: CategoryType) => {
-    console.log(item);
-  };
   const setTagsInverted = (item: CategoryType) => {
     console.log(item);
   };
-  const [panType, setPanType] = useState(null);
+  const setResourceInverted = (item: CategoryType) => {
+    console.log(item);
+  };
 
     return (
       <>
@@ -106,21 +151,17 @@ const Contribute = () => {
               title='标签'
             >
               <AtList hasBorder>
-                {
-                  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                    <AtTag
-                      name='tag-1'
-                      type='primary'
-                      circle
-                      key={item}
-                      customStyle={{ margin: '5px 10px 10px 0' }}
-                      active
-                      onClick={() => setTagsInverted(item)}
-                    >
-                      tag-{item}
-                    </AtTag>
-                  ))
-                }
+                {contributeTypeList.tagList.map(item => (
+                  <AtTag
+                    name={item.title}
+                    active={item.inverted}
+                    customStyle={{ margin: '5px 2px 10px 0' }}
+                    key={item.pkId}
+                    onClick={() => setTagsInverted(item)}
+                  >
+                    {item.title}
+                  </AtTag>
+                ))}
               </AtList>
             </AtAccordion>
             <AtAccordion
@@ -129,19 +170,19 @@ const Contribute = () => {
               title='资源类型'
             >
               <AtList hasBorder>
-                {
-                  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
-                    <AtTag
-                      name='tag-1'
-                      active={false}
-                      customStyle={{ margin: '5px 10px 10px 0' }}
-                      key={item}
-                      onClick={() => setResourceInverted(item)}
-                    >
-                      tag-{item}
-                    </AtTag>
-                  ))
-                }
+                {contributeTypeList.resourceList.map(item => (
+                  <AtTag
+                    name={item.title}
+                    active={item.inverted}
+                    customStyle={{ margin: '5px 2px 10px 0' }}
+                    key={item.pkId}
+                    circle
+                    type='primary'
+                    onClick={() => setResourceInverted(item)}
+                  >
+                    {item.title}
+                  </AtTag>
+                ))}
               </AtList>
             </AtAccordion>
           </AtForm>
@@ -152,7 +193,7 @@ const Contribute = () => {
           </AtButton>
         </View>
       </>
-    );
+    )
   }
 
 export default Contribute;
