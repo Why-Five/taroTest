@@ -8,6 +8,7 @@ import Navbar from './components/CustomNavbar';
 import Notice from './components/Notice';
 import Swiper from './components/Swiper';
 import Panel from './components/Panel';
+import ResourceList from './components/ResourceList';
 
 
 export default function Index() {
@@ -38,6 +39,7 @@ export default function Index() {
       <Notice noticeList={noticeList} />
       <Swiper swiperList={swiper} />
       <Panel />
+      <ResourceList />
     </View>
   );
 }

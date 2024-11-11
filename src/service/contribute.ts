@@ -3,7 +3,7 @@ import { http } from '@/utils/http'
 export const getTagsList = () => {
   return http<Tag[]>({
     method: 'GET',
-    url: '/tags/list',
+    url: '/tag/list',
   })
 }
 
