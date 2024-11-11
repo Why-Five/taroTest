@@ -12,3 +12,31 @@ export const getIndexResourceList = (data: PageParams) => {
     data,
   })
 }
+
+export const getResourceById = id => {
+  return http<IndexResourceType>({
+    method: 'GET',
+    url: `/resource/detail/` + id,
+  })
+}
+
+export const userExchangeResource = (id: number) => {
+  return http({
+    method: 'POST',
+    url: '/user/resource/exchange?resourceId=' + id,
+  })
+}
+
+export const userLikeResoucre = (id: number) => {
+  return http({
+    method: 'POST',
+    url: '/user/resource/like?resourceId=' + id,
+  })
+}
+
+export const userCollectResource = (id: number) => {
+  return http({
+    method: 'POST',
+    url: '/user/resource/collect?resourceId=' + id,
+  })
+}
