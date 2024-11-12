@@ -8,6 +8,7 @@ export default defineAppConfig({
     'pages/noticeDetail/noticeDetail',
     'pages/content/content',
     'pages/search/search',
+    'pages/searchResult/searchResult',
   ],
   window: {
     backgroundTextStyle: 'light',

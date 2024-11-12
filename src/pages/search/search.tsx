@@ -15,7 +15,8 @@ export default function Search() {
       url: `/pages/searchResult/searchResult?keyword=${queryParams.keyword}&tagId=${queryParams.tagId}`,
     });
     handleClear();
-   }
+  };
+
   const [queryParams, setQueryParams] = useState({
     keyword: '',
     tagId: 0,
@@ -33,7 +34,7 @@ export default function Search() {
     if (queryParams.keyword) {
       addHistory(queryParams.keyword);
     }
-  }
+  };
 
   const [tagList, setTagList] = useState<Tag[]>([]);
 
@@ -86,7 +87,7 @@ export default function Search() {
     if (queryParams.keyword) {
       addHistory(queryParams.keyword);
     }
-  }, [queryParams])
+  }, [queryParams]);
 
   const [searchValue, setSearchValue] = useState<string>('');
   const handleChange = (value: string) => {
@@ -116,7 +117,8 @@ export default function Search() {
           onConfirm={handleConfirm}
           onActionClick={handleConfirm}
           onClear={handleClear}
-          onChange={(e)=>setQueryParams({...queryParams, keyword: e})}
+          onChange={(e) => handleChange(e)}
+          onBlur={handleBlur}
         />
       </View>
       <View className='history'>
@@ -140,25 +142,25 @@ export default function Search() {
         )}
       </View>
       <View className='history'>
-              {historySearch.length > 0 && (
-                <>
-                  <View className='topTitle'>
-                    <View className='text'>最近搜索</View>
-                    <View className='icon' onClick={removeHistory}>
-                      <AtIcon value='trash' size='25' />
+        {historySearch.length > 0 && (
+          <>
+            <View className='topTitle'>
+              <View className='text'>最近搜索</View>
+              <View className='icon' onClick={removeHistory}>
+              <AtIcon value='trash' size='25'></AtIcon>
               </View>
-              </View>
-                    <View className='tabs'>
-                      {historySearch.map((tab) => (
-                        <View
-                          key={tab}
-                          className='tab'
-                          onClick={() => clickHistoryTab(tab)}
-                        >
-                        {tab}
-                        </View>
-                      ))}
-                    </View>
+            </View>
+            <View className='tabs'>
+              {historySearch.map((tab) => (
+                <View
+                  key={tab}
+                  className='tab'
+                  onClick={() => clickHistoryTab(tab)}
+                >
+                {tab}
+                </View>
+              ))}
+            </View>
             </>
           )}
       </View>
