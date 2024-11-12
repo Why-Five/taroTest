@@ -5,11 +5,17 @@ import { useEffect, useState } from "react";
 import { getTagsList } from "@/service/contribute";
 import './search.scss'
 
-
-
-
 export default function Search() {
 
+  const addHistory = (value: string) => {
+    setHistorySearch([...new Set([...historySearch, value])].slice(0, 10));
+    Taro.setStorageSync('historySearch', historySearch);
+    console.log(queryParams, 'queryParams');
+    Taro.navigateTo({
+      url: `/pages/searchResult/searchResult?keyword=${queryParams.keyword}&tagId=${queryParams.tagId}`,
+    });
+    handleClear();
+   }
   const [queryParams, setQueryParams] = useState({
     keyword: '',
     tagId: 0,
@@ -24,7 +30,9 @@ export default function Search() {
   };
 
   const handleConfirm = () => {
-    console.log('Searching for...',queryParams);
+    if (queryParams.keyword) {
+      addHistory(queryParams.keyword);
+    }
   }
 
   const [tagList, setTagList] = useState<Tag[]>([]);
@@ -42,7 +50,12 @@ export default function Search() {
   },[])
 
   const clickTag = (item: Tag) => {
-    setQueryParams({ ...queryParams, tagId: item.pkId })
+    console.log(item, 'item点击标签');
+    setQueryParams(prev => ({
+      ...prev,
+      keyword: item.title,
+      tagId: item.pkId,
+    }));
   };
 
   const [historySearch,setHistorySearch] = useState<string[]>(Taro.getStorageSync('historySearch')||['视频','项目']);
@@ -60,8 +73,38 @@ export default function Search() {
   };
 
   const clickHistoryTab = (tab: string) => {
-    setQueryParams({ ...queryParams, keyword: tab });
+    console.log(tab, 'tab');
+    setQueryParams({
+      ...queryParams,
+      keyword: tab,
+    })
+    console.log(queryParams, 'queryParams');
   };
+
+  useEffect(() => {
+    console.log(queryParams, 'queryParams');
+    if (queryParams.keyword) {
+      addHistory(queryParams.keyword);
+    }
+  }, [queryParams])
+
+  const [searchValue, setSearchValue] = useState<string>('');
+  const handleChange = (value: string) => {
+    console.log(value, 'value');
+    setSearchValue(value);
+  }
+
+  const handleBlur = () => {
+    const val = searchValue;
+    if (val) {
+      setQueryParams({
+        ...queryParams,
+        keyword: val,
+      })
+    }
+    setSearchValue('');
+   }
+
   return (
     <View className='searchLayout'>
       <View className='search>'>
