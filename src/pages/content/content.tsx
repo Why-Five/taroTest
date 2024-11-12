@@ -1,12 +1,17 @@
-import { getResourceById } from "@/service/resource";
+import { getResourceById, userExchangeResource } from "@/service/resource";
 import { View, Text } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon } from "taro-ui";
+import { clearUserInfo } from "@/store/modules/user";
+import { useAppDispatch } from "@/store";
 import './content.scss'
 
+
 const Content = () => {
+  const dispatch = useAppDispatch();
   const [resource, setResource] = useState<IndexResourceType>();
+
   useLoad((options) => {
     const { id } = options;
     if (id) {
@@ -26,6 +31,31 @@ const Content = () => {
     }
   };
 
+  const handleResourceAction = async (action: () => Promise<any>, id: number) => {
+    const res = await action();
+    if (res.code === 0) {
+      Taro.showToast({ title: '操作成功', icon: 'success' });
+      getResourceInfo(id);
+    } else if (res.code === 3001 || res.code === 401) {
+      Taro.showToast({ title: res.msg, icon: 'none' });
+      dispatch(clearUserInfo({}));
+      Taro.navigateTo({url:'/pages/login/login'})
+    } else {
+      Taro.showToast({ title: res.msg, icon: 'none' });
+    }
+  };
+
+  const handleExchangeResourceClick = async () => {
+    handleResourceAction(() => userExchangeResource(+resource!.pkId), +resource!.pkId);
+  };
+
+  const handleLikeResourceClick = () => {
+
+  }
+
+  const handleCollectionResourceedClick = () => {
+
+  }
   return (
     <View className='contentLayout'>
       {resource && (
@@ -99,7 +129,7 @@ const Content = () => {
                       </View>
                       <View className='action-btn'>
                         <AtIcon value='star' color={resource.isCollect ? '#1296db' : '#ccc'} size={20}></AtIcon>
-                        <Text>{resource.isLike ? '取消收藏' : '收藏'}</Text>
+                        <Text>{resource.isCollect ? '取消收藏' : '收藏'}</Text>
                       </View>
                     </View>
                   </View>
@@ -108,7 +138,7 @@ const Content = () => {
                     <View className='price symbol'>
                       <Text className='number'>需要积分{resource.price}</Text>
                     </View>
-                    <View className='button'>兑换资源</View>
+                    <View className='button' onClick={handleExchangeResourceClick}>兑换资源</View>
                   </View>
                 )}
         </>
