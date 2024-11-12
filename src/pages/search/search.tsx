@@ -113,7 +113,7 @@ export default function Search() {
           fixed
           actionName='搜一下'
           placeholder='请输入你想要搜索的资源'
-          value={queryParams.keyword}
+          value={searchValue}
           onConfirm={handleConfirm}
           onActionClick={handleConfirm}
           onClear={handleClear}
@@ -147,7 +147,7 @@ export default function Search() {
             <View className='topTitle'>
               <View className='text'>最近搜索</View>
               <View className='icon' onClick={removeHistory}>
-              <AtIcon value='trash' size='25'></AtIcon>
+                <AtIcon value='trash' size='25'></AtIcon>
               </View>
             </View>
             <View className='tabs'>
