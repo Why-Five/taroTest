@@ -1,4 +1,4 @@
-import { getResourceById, userExchangeResource } from "@/service/resource";
+import { getResourceById, userExchangeResource , userLikeResoucre , userCollectResource } from "@/service/resource";
 import { View, Text } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
@@ -50,11 +50,11 @@ const Content = () => {
   };
 
   const handleLikeResourceClick = () => {
-
+    handleResourceAction(() => userLikeResoucre(+resource!.pkId), +resource!.pkId);
   }
 
   const handleCollectionResourceedClick = () => {
-
+    handleResourceAction(() => userCollectResource(+resource!.pkId), +resource!.pkId);
   }
   return (
     <View className='contentLayout'>
@@ -123,11 +123,11 @@ const Content = () => {
                 {resource.isDownload ? (
                   <View className='actionBar'>
                     <View className='action'>
-                      <View className='action-btn'>
+                      <View className='action-btn' onClick={handleLikeResourceClick}>
                         <AtIcon value='heart' color={resource.isLike ? '#1296db' : '#ccc'} size={20}></AtIcon>
                         <Text>{resource.isLike ? '取消点赞' : '点赞'}</Text>
                       </View>
-                      <View className='action-btn'>
+                      <View className='action-btn' onClick={handleCollectionResourceedClick}>
                         <AtIcon value='star' color={resource.isCollect ? '#1296db' : '#ccc'} size={20}></AtIcon>
                         <Text>{resource.isCollect ? '取消收藏' : '收藏'}</Text>
                       </View>
