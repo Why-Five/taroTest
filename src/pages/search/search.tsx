@@ -1,7 +1,9 @@
 import { View } from "@tarojs/components";
 import { AtSearchBar } from "taro-ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getTagsList } from "@/service/contribute";
 import './search.scss'
+
 
 
 export default function Search() {
@@ -21,7 +23,27 @@ export default function Search() {
 
   const handleConfirm = () => {
     console.log('Searching for...',queryParams);
-   }
+  }
+
+  const [tagList, setTagList] = useState<Tag[]>([]);
+
+  const getTagListFun = async () => {
+    const res = await getTagsList();
+    const arr = res.data.filter((item) => {
+      return item.isHot === 1
+    });
+    setTagList(arr);
+  };
+
+  useEffect(() => {
+    getTagListFun();
+  },[])
+
+  const clickTag = (item: Tag) => {
+    setQueryParams({ ...queryParams, tagId: item.pkId })
+  };
+
+
   return (
     <View className='searchLayout'>
       <View className='search>'>
@@ -35,6 +57,26 @@ export default function Search() {
           onClear={handleClear}
           onChange={(e)=>setQueryParams({...queryParams, keyword: e})}
         />
+      </View>
+      <View className='history'>
+        {tagList.length > 0 && (
+          <>
+            <View className='topTitle'>
+              <View className='text'>热门标签</View>
+            </View>
+            <View className='tabs'>
+              {tagList.map((tag) => (
+                <View
+                  key={tag.pkId}
+                  className='tab'
+                  onClick={() => clickTag(tag)}
+                >
+                  {tag.title}
+                </View>
+              ))}
+            </View>
+          </>
+        )}
       </View>
     </View>
   );
