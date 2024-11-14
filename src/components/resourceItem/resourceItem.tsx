@@ -1,5 +1,6 @@
-import { View , Navigator , Image , Text} from "@tarojs/components";
+import { View, Navigator, Image, Text } from "@tarojs/components";
 import { AtIcon } from "taro-ui";
+import './resourceItem.scss';
 
 interface ResourceItemProps {
   resource: IndexResourceType;

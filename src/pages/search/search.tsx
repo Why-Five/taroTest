@@ -11,6 +11,7 @@ export default function Search() {
     setHistorySearch([...new Set([...historySearch, value])].slice(0, 10));
     Taro.setStorageSync('historySearch', historySearch);
     console.log(queryParams, 'queryParams');
+
     Taro.navigateTo({
       url: `/pages/searchResult/searchResult?keyword=${queryParams.keyword}&tagId=${queryParams.tagId}`,
     });

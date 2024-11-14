@@ -3,9 +3,10 @@ import Taro from "@tarojs/taro";
 import { getIndexResourceList } from "@/service/resource";
 import { ScrollView, View } from "@tarojs/components";
 import { getCategoryList } from "@/service/contribute";
-import ResourceItem from "./resourceItem/resourceItem";
+import ResourceItem from "@/components/resourceItem/resourceItem";
 import './resourceList.scss'
-import './resourceItem/resourceItem.scss'
+
+
 
 interface ResourceListProps {}
 
