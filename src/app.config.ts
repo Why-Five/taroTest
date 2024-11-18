@@ -10,6 +10,12 @@ export default defineAppConfig({
     'pages/search/search',
     'pages/searchResult/searchResult',
   ],
+  subPackages: [
+    {
+      root: 'pageUser',
+      pages: ['userInfo/userInfo'],
+    },
+  ],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
