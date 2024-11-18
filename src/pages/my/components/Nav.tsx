@@ -1,10 +1,11 @@
 import { useAppSelector } from "@/store"
 import { View , Text} from "@tarojs/components"
 import Taro from "@tarojs/taro"
+import './nav.scss'
 
 const Navbar = () => {
   const userInfo = useAppSelector((state) => state.user.userInfo)
-  const safeAreaInsets = Taro.getSystemInfo().safeArea
+  const safeAreaInsets = Taro.getSystemInfoSync().safeArea
   const handleClick = () => {
     if (userInfo.pkId > 0) {
       Taro.navigateTo({
