@@ -1,12 +1,15 @@
-import { useAppSelector } from '@/store'
+import { useAppDispatch, useAppSelector } from '@/store'
 import { Text , View , Image , Picker, RadioGroup , Label, Radio, Button, Input } from '@tarojs/components'
 import { useEffect, useState } from 'react'
-import { AtModal ,AtIcon } from 'taro-ui'
+import { AtModal, AtIcon } from 'taro-ui'
+import Taro from '@tarojs/taro'
+import { setUserInfo } from '@/store/modules/user'
 import './userInfo.scss'
 
 
 export default function UserInfo() {
   const userInfo = useAppSelector(state => state.user.userInfo)
+  const dispatch = useAppDispatch()
 
   const [myUserInfo, setMyUserInfo] = useState({
     pkId: 0,
@@ -52,8 +55,45 @@ export default function UserInfo() {
   }
 
   const onAvatarChange = () => {
+    Taro.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      success: (res) => {
+        const { tempFiles } = res
+        const tempFilePath = tempFiles[0].tempFilePath
+        console.log(tempFilePath, 'tempFilePath')
+        Taro.uploadFile({
+          url: 'https://106.14.107.37:8080/share-app-api/common/upload',
+          filePath: tempFilePath,
+          name: 'file',
+          header: {
+            'Authorization':Taro.getStorageSync('token')
+          },
+          success: (fileRes) => {
+            const url = JSON.parse(fileRes.data).data
+            setMyUserInfo((prev) => ({ ...prev, avatar: url }))
+            dispatch(setUserInfo({ ...userInfo, avatar: url }))
+            Taro.showToast({
+              title: '上传成功',
+              icon: 'success',
+              duration: 2000
+            })
+          },
+          fail: (err) => {
+            console.log(err)
+            Taro.showToast({
+              title: '上传失败',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        })
+      }
+
+    })
   }
   const handleSubmit = () => {
+    console.log(myUserInfo,'myUserInfo')
   }
 
   return (
