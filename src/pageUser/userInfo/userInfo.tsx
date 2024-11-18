@@ -1,7 +1,9 @@
 import { useAppSelector } from '@/store'
-import { Text , View , Image , Picker, RadioGroup , Label, Radio, Button} from '@tarojs/components'
+import { Text , View , Image , Picker, RadioGroup , Label, Radio, Button, Input } from '@tarojs/components'
 import { useEffect, useState } from 'react'
+import { AtModal ,AtIcon } from 'taro-ui'
 import './userInfo.scss'
+
 
 export default function UserInfo() {
   const userInfo = useAppSelector(state => state.user.userInfo)
@@ -24,7 +26,19 @@ export default function UserInfo() {
     })
   }, [userInfo])
 
+
+  const [isOpenUserName, setIsOpenUserName] = useState(false)
+  const [nickname , setNickname] = useState('')
   const onChangeNickname = () => {
+    setNickname(myUserInfo.nickname)
+    setIsOpenUserName(true)
+  }
+  const closePopup = () => {
+    setIsOpenUserName(false)
+  }
+  const submitNickName = () => {
+    setMyUserInfo((prev) => ({ ...prev, nickname: nickname }))
+    setIsOpenUserName(false)
   }
 
   const onGenderChange = (ev) => {
@@ -61,8 +75,7 @@ export default function UserInfo() {
           <View className='row'>
             <View className='left'>昵称</View>
             <View className='right'>
-              <Text className='txt'>{myUserInfo.nickname}</Text>
-              <View className='icon' onClick={onChangeNickname}> {/**右箭头图标 */}   </View>
+              <Text className='txt' onClick={onChangeNickname}>{myUserInfo.nickname}</Text>
             </View>
           </View>
         </View>
@@ -105,6 +118,34 @@ export default function UserInfo() {
         <Button className='button' onClick={handleSubmit}>保存</Button>
 
       </View>
+
+      <AtModal className='nikeNamePopup' isOpened={isOpenUserName}>
+        <View className='container'>
+          <View className='popHeader'>
+            <View></View>
+            <View className='title'>修改用户昵称</View>
+            <View className='close' onClick={closePopup}>
+              <AtIcon value='close' color='#999' size='18' />
+            </View>
+          </View>
+
+          <View className='content'>
+            <Input
+              className='input'
+              type='text'
+              placeholder='请输入昵称'
+              value={nickname}
+              onInput={(e) => setNickname(e.detail.value)}
+            />
+          </View>
+
+          <View className='footer'>
+            <Button className='submit-btn' onClick={submitNickName} size='mini' plain>
+              确定修改昵称
+            </Button>
+          </View>
+        </View>
+      </AtModal>
     </View>
   )
 }
