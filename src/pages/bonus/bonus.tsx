@@ -1,12 +1,13 @@
 import ResourceActionInfo from "@/components/resourceActionInfo/resourceActionInfo";
 import ResourceBonusInfo from "@/components/resourceBonusInfo/resourceBonusInfo";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { View , Text, ScrollView} from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import { userBonusInfo } from "@/service/bonus";
-import { userResourceList } from "@/service/user";
+import { getUserInfo, userResourceList } from "@/service/user";
 import './bonus.scss'
+import { setUserInfo } from "@/store/modules/user";
 
 export default function Bonus() {
   const userInfo = useAppSelector((state) => state.user.userInfo)
@@ -102,7 +103,13 @@ export default function Bonus() {
     })
     setFinish(false)
   }
-
+  const dispatch = useAppDispatch()
+  const getLoginUserInfo = async () => {
+    const res = await getUserInfo()
+    if (res.code === 0) {
+      dispatch(setUserInfo(res.data))
+    }
+  }
 
   return (
     <View className='scorePage'>
@@ -112,7 +119,7 @@ export default function Bonus() {
             {userInfo.bonus}
             <Text className='txt'>分</Text>
           </View>
-          <View className='btn'>
+          <View className='btn' onClick={getLoginUserInfo}>
             刷新积分
           </View>
         </View>
