@@ -9,6 +9,7 @@ export default defineAppConfig({
     'pages/content/content',
     'pages/search/search',
     'pages/searchResult/searchResult',
+    'pages/myResource/myResource',
   ],
   subPackages: [
     {
