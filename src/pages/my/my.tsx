@@ -96,7 +96,7 @@ const PersonalCenter = () => {
         )}
       </View>
       <View className='action-info'>
-        <Navigator url='/pages/bouns/bouns' className='row'>
+        <Navigator url='/pages/bonus/bonus' className='row'>
           <View className='left'>
             <AtIcon value='calendar' size='20' color='#1296db'></AtIcon>
             <Text className='txt'>积分明细</Text>
