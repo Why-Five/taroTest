@@ -65,3 +65,10 @@ export const userResourceList = (data: { page: number; limit: number; type: numb
     data,
   })
 }
+
+export const updateUserPhone = (phone: string, code: string) => {
+  return http<null>({
+    method: 'POST',
+    url: '/auth/bindPhone?phone=${phone}&code=${code}',
+  })
+}
