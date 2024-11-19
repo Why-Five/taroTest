@@ -3,10 +3,15 @@ import ResourceBonusInfo from "@/components/resourceBonusInfo/resourceBonusInfo"
 import { useAppSelector } from "@/store";
 import { View , Text, ScrollView} from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { userBonusInfo } from "@/service/bonus";
+import { userResourceList } from "@/service/user";
 import './bonus.scss'
 
 export default function Bonus() {
+  const userInfo = useAppSelector((state) => state.user.userInfo)
+
+
   const [pageParams, setPageParams] = useState({
     page: 1,
     limit: 10,
@@ -14,27 +19,91 @@ export default function Bonus() {
   })
 
   const [bonusData, setBonusData] = useState<UserScoreReturn>({
-    list: [
-      {
-        pkId: 1,
-        content: '签到',
-        createTime: '2024-01-01',
-        bonus:10,
-      }
-    ],
+    list: [],
     total: 0,
   })
   const [resourceData,setResourceData]= useState<UserResourceReturn>({
     list: [],
     total: 0,
   })
-  const handleSelectClick = (type: number) => {
-    setPageParams((prev) => ({
-      ...prev,
-      type,
-    }))
+
+  const [finish, setFinish] = useState(false)
+  const [hasData, setHasData] = useState(false)
+
+  const getUserBonusInfoList = async () => {
+    if (finish) {
+      return Taro.showToast({icon: 'none', title:'没有更多数据'})
+    }
+    const res = await userBonusInfo(pageParams)
+    if (res.code === 0) {
+      setBonusData((prevData) => ({
+        list: [...prevData.list, ...res.data.list],
+        total:res.data.total
+      }))
+      setHasData(res.data.list.length > 0)
+      if (bonusData.list.length < bonusData.total) {
+        setPageParams((prevParams) => ({ ...prevParams, page: prevParams.page + 1 }))
+      } else {
+        setFinish(true)
+      }
+    }
   }
-  const userInfo = useAppSelector((state)=>state.user.userInfo)
+
+  const getUserResourceInfoList = async () => {
+    if (finish) {
+      return Taro.showToast({icon: 'none', title:'没有更多数据'})
+    }
+    const res = await userResourceList(pageParams)
+    if (res.code === 0) {
+      setResourceData((prevData) => ({
+        list: [...prevData.list, ...res.data.list],
+        total:res.data.total
+      }))
+      setHasData(res.data.list.length > 0)
+      if (resourceData.list.length < resourceData.total) {
+        setPageParams((prevParams) => ({ ...prevParams, page: prevParams.page + 1 }))
+      } else {
+        setFinish(true)
+     }
+    }
+  }
+
+  const getData = (type: number) => {
+    setFinish(false)
+    if (type === 1) {
+      getUserBonusInfoList()
+    } else {
+      getUserResourceInfoList()
+    }
+  }
+
+  useEffect(() => {
+    getData(pageParams.type)
+  }, [pageParams.type])
+
+  const handleSelectClick = (type: number) => {
+    resetData()
+    setPageParams((prevParams)=>({...prevParams, type}))
+  }
+
+  const resetData = () => {
+    setPageParams({
+      type: 1,
+      page: 1,
+      limit:10,
+    })
+    setBonusData({
+      list: [],
+      total: 0
+    })
+    setResourceData({
+      list: [],
+      total: 0
+    })
+    setFinish(false)
+  }
+
+
   return (
     <View className='scorePage'>
       <View className='myScore'>
@@ -43,7 +112,7 @@ export default function Bonus() {
             {userInfo.bonus}
             <Text className='txt'>分</Text>
           </View>
-          <View className='btn' onClick={()=>Taro.showToast({title:'刷新成功',icon:'success',duration:1000})}>
+          <View className='btn'>
             刷新积分
           </View>
         </View>
@@ -67,6 +136,9 @@ export default function Bonus() {
         {pageParams.type === 1 ? (
           <ScrollView
             scrollY
+            scrollWithAnimation
+            onScrollToLower={getUserBonusInfoList}
+            lowerThreshold={50}
             enableBackToTop
             className='scrollView'
           >
@@ -75,14 +147,21 @@ export default function Bonus() {
             ))}
           </ScrollView>
         ) : (
-            <ScrollView className='exchangeList' scrollY>
+            <ScrollView className='exchangeList' scrollY
+              scrollWithAnimation
+              onScrollToLower={getUserResourceInfoList}
+              lowerThreshold={50}
+              enableBackToTop
+            >
               {resourceData.list.map((item) => (
                 <ResourceActionInfo key={item.pkId} info={item} />
               ))}
           </ScrollView>
         )}
-
+        <View className='loading-text'>
+          {finish?'没有更多数据':'正在加载...'}
         </View>
+      </View>
     </View>
   )
 }
