@@ -47,3 +47,10 @@ export const updateUserInfo = (data: Partial<UserInfo>) => {
     data,
   })
 }
+
+export const userDailyCheck = () => {
+  return http<null>({
+    method: 'POST',
+    url: '/user/dailyCheck',
+  })
+}

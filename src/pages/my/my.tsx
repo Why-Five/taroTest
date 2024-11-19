@@ -1,13 +1,50 @@
 import Taro from '@tarojs/taro';
+import { getUserInfo, userDailyCheck } from '@/service/user';
+import { setUserInfo } from '@/store/modules/user';
 import { View, Image, Navigator, Text } from '@tarojs/components';
-import { useAppSelector } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { AtIcon } from 'taro-ui';
 import Navbar from './components/Nav';
 import './my.scss';
 
 const PersonalCenter = () => {
   const userInfo = useAppSelector(state => state.user.userInfo);
+  const dispatch = useAppDispatch()
 
+  const getLoginUserInfo = async () => {
+    const res = await getUserInfo()
+    if (res.code === 0) {
+      const data = {
+        ...res.data,
+        isDailyCheck:true
+      }
+      dispatch(setUserInfo(data))
+    }
+  }
+
+  const myHandleCheck = () => {
+    Taro.showModal({
+      title: '你确定要签到吗',
+      success: async (res) => {
+        if (res.confirm) {
+          const confirmRes = await userDailyCheck()
+          if (confirmRes.code === 0) {
+            Taro.showToast({
+              title: '签到成功',
+            })
+            getLoginUserInfo()
+          } else {
+            Taro.showToast({
+              title: confirmRes.msg,
+              icon: 'none',
+            })
+            return
+          }
+        }
+      }
+
+    })
+  }
   const handleClickLogin = () => {
     Taro.redirectTo({
       url: '/pages/login/login'
@@ -15,6 +52,7 @@ const PersonalCenter = () => {
   };
 
   return (
+    <>
     <View className='my'>
       <Navbar />
       <View className='userInfo'>
@@ -52,7 +90,7 @@ const PersonalCenter = () => {
           </View>
         </View>
         {userInfo.pkId > 0 && (
-          <View className='right'>
+          <View className='right' onClick={myHandleCheck}>
             {userInfo.isDailyCheck ? '已签到' : '每日签到'}
           </View>
         )}
@@ -142,7 +180,9 @@ const PersonalCenter = () => {
           </View>
         </View>
       )}
-    </View>
+      </View>
+
+    </>
   );
 };
 
