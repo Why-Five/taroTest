@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { AtModal, AtIcon } from 'taro-ui'
 import Taro from '@tarojs/taro'
 import { setUserInfo } from '@/store/modules/user'
-import './userInfo.scss'
+import { updateUserInfo } from '@/service/user'
+import './userInfo.scss'  
 
 
 export default function UserInfo() {
@@ -92,8 +93,18 @@ export default function UserInfo() {
 
     })
   }
-  const handleSubmit = () => {
-    console.log(myUserInfo,'myUserInfo')
+  const handleSubmit = async () => {
+    const res = await updateUserInfo(myUserInfo)
+    if (res.code === 0) {
+      Taro.showToast({ title: '修改成功' })
+      dispatch(setUserInfo(res.data))
+      setTimeout(()=>{Taro.navigateBack({delta: 1})},1000)
+    } else {
+      Taro.showToast({
+        title: '修改失败',
+        icon: 'none'
+      })
+    }
   }
 
   return (
