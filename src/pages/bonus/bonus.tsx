@@ -6,8 +6,8 @@ import Taro from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import { userBonusInfo } from "@/service/bonus";
 import { getUserInfo, userResourceList } from "@/service/user";
-import './bonus.scss'
 import { setUserInfo } from "@/store/modules/user";
+import './bonus.scss'
 
 export default function Bonus() {
   const userInfo = useAppSelector((state) => state.user.userInfo)

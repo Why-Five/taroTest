@@ -15,7 +15,7 @@ export default defineAppConfig({
   subPackages: [
     {
       root: 'pageUser',
-      pages: ['userInfo/userInfo'],
+      pages: ['userInfo/userInfo', 'setting/setting'],
     },
   ],
   window: {
