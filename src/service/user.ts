@@ -54,3 +54,14 @@ export const userDailyCheck = () => {
     url: '/user/dailyCheck',
   })
 }
+
+export const userResourceList = (data: { page: number; limit: number; type: number }) => {
+  return http<{
+    list: IndexResourceType[]
+    total: number
+  }>({
+    method: 'POST',
+    url: '/user/resource',
+    data,
+  })
+}
