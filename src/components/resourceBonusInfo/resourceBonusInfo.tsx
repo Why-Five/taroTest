@@ -1,0 +1,35 @@
+import { View , Text} from "@tarojs/components";
+import { AtIcon } from "taro-ui";
+
+interface InfoProps {
+  info: {
+    content: string;
+    createTime: string;
+    bonus: number;
+  };
+}
+
+const ResourceItem = ({ info }: InfoProps) => {
+  return (
+    <View className='list'>
+      <View className='left'>
+        <AtIcon className='icons' value='calendar' size='30' color='#3d94fe' />
+        <View className='info'>
+          <Text className='title'>{info.content}</Text>
+          <Text className='tips'>{info.createTime}</Text>
+        </View>
+      </View>
+      <Text className='right'>
+        <Text
+          style={{
+            color:info.bonus>0?'green':'red',
+          }}
+        >
+          {info.bonus>0 ? `+${info.bonus}`:info.bonus}
+        </Text>
+      </Text>
+    </View>
+  )
+}
+
+export default ResourceItem
