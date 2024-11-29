@@ -6,7 +6,7 @@ import { useState } from "react";
 import { isPhoneAvailable } from "@/utils/validate";
 import { clearUserInfo } from "@/store/modules/user";
 import { AtIcon, AtModal } from "taro-ui";
-import { updateUserPhone } from "@/service/user";
+import { logout, updateUserPhone } from "@/service/user";
 import './setting.scss'
 
 export default function Setting() {
@@ -56,6 +56,26 @@ export default function Setting() {
     }
   }
   const [localPhoneForm, setLocalPhoneForm] = useState({ phone: '', code: '' });
+  const handleQuitClick = () => {
+    Taro.showModal({
+           title: '你确定要退出吗？',
+            success: async (res) => {
+             if (res.confirm) {
+              const resData = await logout()
+          if (resData.code === 0) {
+      dispatch(clearUserInfo({}))
+    Taro.removeStorageSync('token')
+  Taro.showToast({
+           title: '退出登录成功',
+         })
+       Taro.reLaunch({
+     url: '/page/login/login',
+  })
+   }
+  }
+   },
+   })
+  }
   return (
 
     <>
@@ -94,7 +114,7 @@ export default function Setting() {
 
         {userInfo.pkId >= 0 && (
           <View className='action'>
-            <Button className='button' onClick={()=>console.log('退出登录')}>
+            <Button className='button' onClick={handleQuitClick}>
               退出登录
             </Button>
           </View>
